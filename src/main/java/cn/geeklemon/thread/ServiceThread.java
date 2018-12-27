@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -27,20 +28,20 @@ public class ServiceThread implements Runnable {
 	@Override
 	public void run() {
 
-		LOG.info("开始执行请求");
 		ResultInfo result = ResultInfo.getInstance();
 		/* 请求路径 */
 		String path = message.getServicePath();
 		String param[] = message.getParams().split("-");
 		/* 根据路径获取类和方法，因为建议一个程序一个服务，所以服务名不需要使用 */
 		List toto = GeeklemonProviderApplication.map.get(path);
+		Object[] params = null;
 
 		if (toto.size() != 0) {
 			try {
 				Class class1 = (Class) toto.get(0);
 				Method method = (Method) toto.get(1);
 				int paramLength = (int) toto.get(2);
-				Object[] params = null;
+				
 				if (paramLength != 0 && paramLength <= param.length) {
 					params = new Object[paramLength];
 					for (int i = 0; i < paramLength; i++) {

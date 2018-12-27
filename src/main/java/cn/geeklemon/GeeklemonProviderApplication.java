@@ -18,7 +18,22 @@ public class GeeklemonProviderApplication {
 	
 	public static void main(String[] args) {
 		SpringApplication.run(GeeklemonProviderApplication.class, args);
-		ProviderExecuteService.startServer();
+		ProviderInitializer initializer = new ProviderInitializer();
+		initializer.setServiceName("geeklemon");
+		initializer.setServicePackage("cn.geeklemon.service");
+		initializer.setServicePort(8884);
+		
+		RegisterInitializer registerInitializer  = new RegisterInitializer();
+		registerInitializer.setCenterAddress("127.0.0.1");
+		registerInitializer.setCenterPort(8899);
+		registerInitializer.setHeartBeatAddress("127.0.0.1");
+		registerInitializer.setHeartBeatPort(8898);
+		
+		registerInitializer.setZk(true);
+		registerInitializer.setZkString("127.0.0.1:2181");
+		
+//		new RegisterFactory(initializer, registerInitializer);
+		new RegisterFactory(initializer, registerInitializer,true);
 	}
 }
 

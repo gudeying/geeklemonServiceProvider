@@ -11,6 +11,7 @@ import java.util.Set;
 
 import cn.geeklemon.GeeklemonProviderApplication;
 import cn.geeklemon.annotation.ExecutorBean;
+import cn.geeklemon.thread.ProviderRegisterThread;
 import cn.geeklemon.util.AnnoManageUtil;
 
 public class Test {
@@ -41,7 +42,12 @@ public class Test {
 //		System.out.println(formatParam(testSplit).split("-").length);
 		
 		System.out.println("随机数");
-		System.out.println((int)(1+Math.random()*(3-1+1)));
+		System.out.println((int)(1+Math.random()*(2)));
+		
+		String[] addresses = new ProviderRegisterThread().getPathString();
+		for (String string : addresses) {
+			System.out.println(string);
+		}
 		
 		System.out.println("///////");
 		List<Object> lObjects = map.get("/test2");

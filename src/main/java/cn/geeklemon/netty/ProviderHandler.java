@@ -5,9 +5,12 @@ import org.slf4j.LoggerFactory;
 
 import cn.geeklemon.entity.ResultInfo;
 import cn.geeklemon.registerparam.BaseMessage;
+import cn.geeklemon.registerparam.RequestMessage;
 import cn.geeklemon.registerparam.RequestServiceMessage;
+
 import cn.geeklemon.thread.ProviderExecuteService;
 import cn.geeklemon.thread.ServiceThread;
+import cn.geeklemon.thread.ServiceWithParams;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -21,6 +24,12 @@ public class ProviderHandler extends SimpleChannelInboundHandler<BaseMessage>{
 			LOGGER.info("請求信息");
 			RequestServiceMessage message = (RequestServiceMessage)msg;
 			ProviderExecuteService.addServiceTask(message, ctx.channel());
+		}else if (msg instanceof RequestMessage) {
+			LOGGER.info("带参数请求");
+			RequestMessage message = (RequestMessage)msg;
+			ResultInfo resultInfo = ServiceWithParams.service(message);
+			resultInfo.setUid(message.getUid());
+			ctx.channel().writeAndFlush(resultInfo);
 		}
 	}
 	

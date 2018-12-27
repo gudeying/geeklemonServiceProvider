@@ -11,12 +11,12 @@ import cn.geeklemon.netty.ProviderBootServer;
 import cn.geeklemon.registerparam.RequestServiceMessage;
 import io.netty.channel.Channel;
 
-@Component
 public class ProviderExecuteService {
-	static final Logger logger = LoggerFactory.getLogger(ProviderExecuteService.class);
-	static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-	static ExecutorService servicePool = Executors.newSingleThreadExecutor();
-
+	private static final Logger logger = LoggerFactory.getLogger(ProviderExecuteService.class);
+	private static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
+	private static ExecutorService servicePool = Executors.newSingleThreadExecutor();
+	private static ProviderRegisterThread registThread ;
+	private static HeartbeatThread heartBeatClient;
 	public static void addServiceTask(RequestServiceMessage requestServiceMessage, Channel channel) {
 		logger.info("提交任务：{}",requestServiceMessage.getServicePath());
 		cachedThreadPool.submit(new ServiceThread(channel, requestServiceMessage));
@@ -26,7 +26,31 @@ public class ProviderExecuteService {
 		cachedThreadPool.submit(command);
 	}
 
-	public static void startServer() {
-		servicePool.submit(new ProviderBootServer());
+	public static void startServer(ProviderBootServer server,ProviderRegisterThread registerThread,HeartbeatThread heartbeatThread) {
+		ProviderExecuteService.registThread = registerThread;
+		ProviderExecuteService.heartBeatClient = heartbeatThread;
+		servicePool.submit(server);
+		servicePool.shutdown();//shutDown do not wait for task complete
+	}
+	
+	public static void registeAndHeartBeat() {
+		
+		cachedThreadPool.submit(registThread);
+		cachedThreadPool.submit(heartBeatClient);
+	}
+	
+	public static void registerWithZookeeper() {
+		
+	}
+	
+	public static void shutDownAll() {
+		heartBeatClient.stopHeartBeat();
+		cachedThreadPool.shutdown();
+	}
+	
+	
+	public static void shutDownAllThreadPool(){
+		cachedThreadPool.shutdown();
+		servicePool.shutdown();
 	}
 }

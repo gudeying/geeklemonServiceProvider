@@ -4,7 +4,9 @@ public class RegisterMessage extends BaseMessage {
 	private String methodPath;
 	private String serviceName;
 	private String serviceAddress;
+	private int servicePort;
 	private String note;
+	private String[] pathArr;
 
 	public RegisterMessage() {
 		super();
@@ -40,6 +42,19 @@ public class RegisterMessage extends BaseMessage {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+	public int getServicePort() {
+		return servicePort;
+	}
+	public void setServicePort(int servicePort) {
+		this.servicePort = servicePort;
+	}
+
+	public String[] getPathArr() {
+		return pathArr;
+	}
+	public void setPathArr(String[] pathArr) {
+		this.pathArr = pathArr;
 	}
 
 }
